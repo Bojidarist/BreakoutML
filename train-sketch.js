@@ -18,10 +18,10 @@ const faceApiDetectionOptions = {
 };
 
 const neuralNetworkOptions = {
-	inputs: 1,
-	outputs: 3,
-	task: "classification",
-	debug: false
+    inputs: 1,
+    outputs: 3,
+    task: "classification",
+    debug: false
 }
 
 function setup() {
@@ -39,12 +39,12 @@ function setup() {
     scale(-1, 1);
     
     faceapi = ml5.faceApi(video, faceApiDetectionOptions, faceApiModelReady);
-	neuralNetwork = ml5.neuralNetwork(neuralNetworkOptions);
+    neuralNetwork = ml5.neuralNetwork(neuralNetworkOptions);
     textAlign(RIGHT);
 }
 
 function initHTMLElements() {
-	leftTrainButton = document.getElementById("leftTrainButton");
+    leftTrainButton = document.getElementById("leftTrainButton");
     noneTrainButton = document.getElementById("noneTrainButton");
     rightTrainButton = document.getElementById("rightTrainButton");
     startTrainButton = document.getElementById("startTrainButton");
@@ -58,54 +58,54 @@ function initHTMLElements() {
 
 function addLeftExample() {
     trainData.push({
-		slope: slope,
-		direction: "left"
-	});
+        slope: slope,
+        direction: "left"
+    });
 }
 
 function addNoneExample() {
     trainData.push({
-		slope: slope,
-		direction: "none"
-	});
+        slope: slope,
+        direction: "none"
+    });
 }
 
 function addRightExample() {
     trainData.push({
-		slope: slope,
-		direction: "right"
-	});
+        slope: slope,
+        direction: "right"
+    });
 }
 
 function trainModel() {
     trainData.forEach(item => {
-		const input = { 
-			slope: item.slope 
-		};
+        const input = { 
+            slope: item.slope 
+        };
 
-		const output = { 
-			direction: item.direction 
-		};
+        const output = { 
+            direction: item.direction 
+        };
 
-		neuralNetwork.addData(input, output);
-	});
+        neuralNetwork.addData(input, output);
+    });
 
-	neuralNetwork.normalizeData();
+    neuralNetwork.normalizeData();
 
-	const trainingOptions = {
-		epochs: 64,
-		batchSize: 12
-	}
+    const trainingOptions = {
+        epochs: 64,
+        batchSize: 12
+    }
 
-	neuralNetwork.train(trainingOptions, finishedTraining);
+    neuralNetwork.train(trainingOptions, finishedTraining);
 }
 
 function finishedTraining() {
-	console.log("Finished training!");
-	console.log(trainData);
-	isFinished = true;
+    console.log("Finished training!");
+    console.log(trainData);
+    isFinished = true;
 
-	neuralNetwork.save("direction_model");
+    neuralNetwork.save("direction_model");
 }
 
 function faceApiModelReady() {
@@ -129,15 +129,15 @@ function faceApiGotResults(err, result) {
         }
     }
 
-	if (isFinished) {
-		neuralNetwork.classify({slope: slope}, (error, res) => {
-			if(error){
-				console.error(error);
-				return;
-			}
-			console.log(res[0].label);
-		});
-	}
+    if (isFinished) {
+        neuralNetwork.classify({slope: slope}, (error, res) => {
+            if(error){
+                console.error(error);
+                return;
+            }
+            console.log(res[0].label);
+        });
+    }
     faceapi.detect(faceApiGotResults);
 }
 
